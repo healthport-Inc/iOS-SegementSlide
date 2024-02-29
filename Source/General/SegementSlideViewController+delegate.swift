@@ -16,6 +16,13 @@ extension SegementSlideViewController: UIScrollViewDelegate {
         return true
     }
     
+    /// 헤더뷰쪽 스크롤의 드래그 시점을 호출하기 위해 Delegate 함수 활용.
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        self.parentViewDidEndDragging(scrollView)
+    }
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.parentViewWillBeginDragging(scrollView)
+    }
 }
 
 extension SegementSlideViewController: SegementSlideContentDelegate {

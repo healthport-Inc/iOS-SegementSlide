@@ -97,6 +97,14 @@ open class SegementSlideViewController: UIViewController {
         
     }
     
+    /// 헤더뷰 쪽에 대한 드래그를 시작하고 끝나는 시점을 알기 위한 함수
+    open func parentViewDidEndDragging(_ scrollView: UIScrollView) {
+        
+    }
+    open func parentViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+    }
+    
     open func didSelectContentViewController(at index: Int) {
         
     }
