@@ -24,6 +24,7 @@ public class SegementSlideDefaultSwitcherView: UIView {
     
     public private(set) var scrollView = UIScrollView()
     private let indicatorView = UIView()
+    private let lowerLine = UIView()
     
     
     /// SwitcherView 버튼의 타이틀을 AttributedString으로 적용하기 위한 프로퍼티.
@@ -183,6 +184,13 @@ extension SegementSlideDefaultSwitcherView {
             scrollView.addSubview(button)
             titleButtons.append(button)
         }
+        
+        scrollView.addSubview(lowerLine)
+        lowerLine.backgroundColor = UIColor(red: 0.87, green: 0.88, blue: 0.90, alpha: 1.00)
+        let size = CGSize(width: scrollView.frame.width, height: 1)
+        let origin = CGPoint(x: scrollView.frame.origin.x, y: scrollView.frame.maxY - size.height)
+        lowerLine.frame = CGRect(origin: origin, size: size)
+        
         scrollView.addSubview(indicatorView)
         indicatorView.layer.masksToBounds = true
         indicatorView.layer.cornerRadius = innerConfig.indicatorHeight/2

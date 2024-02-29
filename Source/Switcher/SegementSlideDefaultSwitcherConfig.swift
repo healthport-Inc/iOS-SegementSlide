@@ -36,7 +36,7 @@ public struct SegementSlideDefaultSwitcherConfig {
                 selectedTitleColor: UIColor = UIColor.darkGray,
                 indicatorWidth: CGFloat = 30,
                 indicatorHeight: CGFloat = 2,
-                indicatorColor: UIColor = UIColor.darkGray,
+                indicatorColor: UIColor = UIColor(red: 0.137, green: 0.773, blue: 0.745, alpha: 1),
                 badgeHeightForPointType: CGFloat = 9,
                 badgeHeightForCountType: CGFloat = 15,
                 badgeHeightForCustomType: CGFloat = 14,
