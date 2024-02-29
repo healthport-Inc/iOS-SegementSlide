@@ -147,7 +147,9 @@ extension SegementSlideViewController {
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         if contentView.topConstraint == nil {
-            contentView.topConstraint = contentView.topAnchor.constraint(equalTo: switcherView.bottomAnchor)
+            let topConstarint = contentView.topAnchor.constraint(equalTo: switcherView.bottomAnchor)
+            topConstarint.priority = UILayoutPriority(rawValue: 700)
+            contentView.topConstraint = topConstarint
         }
         if contentView.leadingConstraint == nil {
             contentView.leadingConstraint = contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
@@ -161,9 +163,9 @@ extension SegementSlideViewController {
             /// contentView.bottomConstraint가 view.bottomAnchor와 연결 되어 있어서
             /// switcherView가 아래로 내려가고 contentView가 찌그러져 top과 bottom이 view의 bottom에 붙는 순간에
             /// SwitcherView도 view의 bottom 아래로는 내려가지 않게 됨.
-            /// 그래서 해당 constraint의 priority를 999로 줄여서 해결 함.
+            /// 그래서 해당 constraint의 priority를 700으로 줄여서 해결 함.
             let bottomConstraint = contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            bottomConstraint.priority = UILayoutPriority(rawValue: 999)
+            bottomConstraint.priority = UILayoutPriority(rawValue: 700)
             contentView.bottomConstraint = bottomConstraint
         }
         
