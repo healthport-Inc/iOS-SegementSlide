@@ -187,9 +187,6 @@ extension SegementSlideDefaultSwitcherView {
         
         scrollView.addSubview(lowerLine)
         lowerLine.backgroundColor = UIColor(red: 0.87, green: 0.88, blue: 0.90, alpha: 1.00)
-        let size = CGSize(width: scrollView.frame.width, height: 1)
-        let origin = CGPoint(x: scrollView.frame.origin.x, y: scrollView.frame.maxY - size.height)
-        lowerLine.frame = CGRect(origin: origin, size: size)
         
         scrollView.addSubview(indicatorView)
         indicatorView.layer.masksToBounds = true
@@ -216,6 +213,11 @@ extension SegementSlideDefaultSwitcherView {
             offsetX += buttonWidth
         }
         scrollView.contentSize = CGSize(width: bounds.width, height: bounds.height)
+        
+        /// 버튼 아래에 보이는 회색 줄에 대한 frame 설정.
+        let size = CGSize(width: scrollView.frame.width, height: 1)
+        let origin = CGPoint(x: scrollView.frame.origin.x, y: scrollView.frame.maxY - size.height)
+        lowerLine.frame = CGRect(origin: origin, size: size)
     }
     
     private func updateSelectedButton(at index: Int, animated: Bool) {
