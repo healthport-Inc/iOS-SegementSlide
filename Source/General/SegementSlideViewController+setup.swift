@@ -118,9 +118,9 @@ extension SegementSlideViewController {
         
         switcherView.translatesAutoresizingMaskIntoConstraints = false
         if switcherView.topConstraint == nil {
-            let topConstraint = switcherView.topAnchor.constraint(equalTo: headerView.bottomAnchor)
-            topConstraint.priority = UILayoutPriority(rawValue: 999)
-            switcherView.topConstraint = topConstraint
+            /// switcherView의 상단은 항상 headerView에 붙어 있어야 하므로
+            /// priority를 999로 설정하던것을 기본 값(1000)으로 변경
+            switcherView.topConstraint = switcherView.topAnchor.constraint(equalTo: headerView.bottomAnchor)
         }
         if safeAreaTopConstraint == nil {
             safeAreaTopConstraint?.isActive = false
@@ -156,7 +156,15 @@ extension SegementSlideViewController {
             contentView.trailingConstraint = contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         }
         if contentView.bottomConstraint == nil {
-            contentView.bottomConstraint = contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            /// SwitcherView는 항상 headerView에 붙어 있어야 하고
+            /// contentView.topConstarint는 switcherView.bottomAnchor에 붙고
+            /// contentView.bottomConstraint가 view.bottomAnchor와 연결 되어 있어서
+            /// switcherView가 아래로 내려가고 contentView가 찌그러져 top과 bottom이 view의 bottom에 붙는 순간에
+            /// SwitcherView도 view의 bottom 아래로는 내려가지 않게 됨.
+            /// 그래서 해당 constraint의 priority를 999로 줄여서 해결 함.
+            let bottomConstraint = contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            bottomConstraint.priority = UILayoutPriority(rawValue: 999)
+            contentView.bottomConstraint = bottomConstraint
         }
         
         headerView.layer.zPosition = -3

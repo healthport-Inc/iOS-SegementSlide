@@ -24,6 +24,12 @@ public class SegementSlideDefaultSwitcherView: UIView {
     
     public private(set) var scrollView = UIScrollView()
     private let indicatorView = UIView()
+    
+    
+    /// SwitcherView 버튼의 타이틀을 AttributedString으로 적용하기 위한 프로퍼티.
+    public var selectedConfig: [NSAttributedString.Key : Any]?
+    public var normalConfig: [NSAttributedString.Key : Any]?
+    
     private var titleButtons: [UIButton] = []
     private var innerConfig: SegementSlideDefaultSwitcherConfig = SegementSlideDefaultSwitcherConfig.shared
     
@@ -158,13 +164,21 @@ extension SegementSlideDefaultSwitcherView {
             return
         }
         for (index, title) in titles.enumerated() {
+            
+            /// attributes가 있으면 해당 attributes로 타이틀을 설정한다.
             let button = UIButton(type: .custom)
+            if let config = self.normalConfig {
+                let attrStr = NSMutableAttributedString(string: title, attributes: config)
+                button.setAttributedTitle(attrStr, for: .normal)
+            } else {
+                button.titleLabel?.font = innerConfig.normalTitleFont
+                button.setTitle(title, for: .normal)
+                button.setTitleColor(innerConfig.normalTitleColor, for: .normal)
+            }
+            
             button.clipsToBounds = false
-            button.titleLabel?.font = innerConfig.normalTitleFont
             button.backgroundColor = .clear
-            button.setTitle(title, for: .normal)
             button.tag = index
-            button.setTitleColor(innerConfig.normalTitleColor, for: .normal)
             button.addTarget(self, action: #selector(didClickTitleButton), for: .touchUpInside)
             scrollView.addSubview(button)
             titleButtons.append(button)
@@ -183,35 +197,21 @@ extension SegementSlideDefaultSwitcherView {
             scrollView.contentSize = CGSize(width: bounds.width, height: bounds.height)
             return
         }
-        var offsetX = innerConfig.horizontalMargin
+        
+        /// switcherView의 버튼들이 margin값을 가질 필요가 없어 제거.
+        /// 버튼의 Size는 뷰의 넓이에 버튼 갯수를 나눠서 구한다.
+        var offsetX: CGFloat = 0
         for titleButton in titleButtons {
-            let buttonWidth: CGFloat
-            switch innerConfig.type {
-            case .tab:
-                buttonWidth = (bounds.width-innerConfig.horizontalMargin*2)/CGFloat(titleButtons.count)
-            case .segement:
-                let title = titleButton.title(for: .normal) ?? ""
-                let normalButtonWidth = title.boundingWidth(with: innerConfig.normalTitleFont)
-                let selectedButtonWidth = title.boundingWidth(with: innerConfig.selectedTitleFont)
-                buttonWidth = selectedButtonWidth > normalButtonWidth ? selectedButtonWidth : normalButtonWidth
-            }
+            let buttonWidth: CGFloat = scrollView.frame.width / CGFloat(titleButtons.count)
+            
             titleButton.frame = CGRect(x: offsetX, y: 0, width: buttonWidth, height: scrollView.bounds.height)
-            switch innerConfig.type {
-            case .tab:
-                offsetX += buttonWidth
-            case .segement:
-                offsetX += buttonWidth+innerConfig.horizontalSpace
-            }
+            offsetX += buttonWidth
         }
-        switch innerConfig.type {
-        case .tab:
-            scrollView.contentSize = CGSize(width: bounds.width, height: bounds.height)
-        case .segement:
-            scrollView.contentSize = CGSize(width: offsetX-innerConfig.horizontalSpace+innerConfig.horizontalMargin, height: bounds.height)
-        }
+        scrollView.contentSize = CGSize(width: bounds.width, height: bounds.height)
     }
     
     private func updateSelectedButton(at index: Int, animated: Bool) {
+        // FIXED
         guard scrollView.frame != .zero else {
             return
         }
@@ -224,21 +224,43 @@ extension SegementSlideDefaultSwitcherView {
                 return
             }
             let selectedTitleButton = titleButtons[selectedIndex]
-            selectedTitleButton.setTitleColor(innerConfig.normalTitleColor, for: .normal)
-            selectedTitleButton.titleLabel?.font = innerConfig.normalTitleFont
+            /// 위에서 Attributes로 설정한 타이틀이 존재 한다면
+            /// 해당 타이틀로 다시 Attributes를 설정해준다.
+            if let config = self.normalConfig, let title = selectedTitleButton.attributedTitle(for: .normal) {
+                let attStr = NSMutableAttributedString(string: title.string, attributes: config)
+                selectedTitleButton.setAttributedTitle(attStr, for: .normal)
+            } else {
+                selectedTitleButton.setTitleColor(innerConfig.normalTitleColor, for: .normal)
+                selectedTitleButton.titleLabel?.font = innerConfig.normalTitleFont
+            }
+            
         }
         guard index >= 0, index < count else {
             return
         }
+        
         let titleButton = titleButtons[index]
-        titleButton.setTitleColor(innerConfig.selectedTitleColor, for: .normal)
-        titleButton.titleLabel?.font = innerConfig.selectedTitleFont
+        /// 위에서 Attributes로 설정한 타이틀이 존재 한다면
+        /// 해당 타이틀로 다시 Attributes를 설정해준다.
+        if let config = self.selectedConfig, let title = titleButton.attributedTitle(for: .normal) {
+            let attStr = NSMutableAttributedString(string: title.string, attributes: config)
+            titleButton.setAttributedTitle(attStr, for: .normal)
+        } else {
+            titleButton.setTitleColor(innerConfig.selectedTitleColor, for: .normal)
+            titleButton.titleLabel?.font = innerConfig.selectedTitleFont
+        }
+        
+        
         if animated, indicatorView.frame != .zero {
             UIView.animate(withDuration: 0.25) {
-                self.indicatorView.frame = CGRect(x: titleButton.frame.origin.x+(titleButton.bounds.width-self.innerConfig.indicatorWidth)/2, y: self.frame.height-self.innerConfig.indicatorHeight, width: self.innerConfig.indicatorWidth, height: self.innerConfig.indicatorHeight)
+                /// 버튼 아래 인디케이터의 길이는 버튼과 길이가 같아야 하므로
+                /// titleButton.frame.width로 설정한다.
+                self.indicatorView.frame = CGRect(x: titleButton.frame.origin.x, y: self.frame.height-self.innerConfig.indicatorHeight, width: titleButton.frame.width, height: self.innerConfig.indicatorHeight)
             }
         } else {
-            indicatorView.frame = CGRect(x: titleButton.frame.origin.x+(titleButton.bounds.width-innerConfig.indicatorWidth)/2, y: frame.height-innerConfig.indicatorHeight, width: innerConfig.indicatorWidth, height: innerConfig.indicatorHeight)
+            /// 버튼 아래 인디케이터의 길이는 버튼과 길이가 같아야 하므로
+            /// titleButton.frame.width로 설정한다.
+            indicatorView.frame = CGRect(x: titleButton.frame.origin.x, y: frame.height-innerConfig.indicatorHeight, width: titleButton.frame.width, height: innerConfig.indicatorHeight)
         }
         if case .segement = innerConfig.type {
             var offsetX = titleButton.frame.origin.x-(scrollView.bounds.width-titleButton.bounds.width)/2
@@ -254,6 +276,7 @@ extension SegementSlideDefaultSwitcherView {
         self.selectedIndex = index
         delegate?.segementSwitcherView(self, didSelectAtIndex: index, animated: animated)
     }
+    
     
     @objc
     private func didClickTitleButton(_ button: UIButton) {

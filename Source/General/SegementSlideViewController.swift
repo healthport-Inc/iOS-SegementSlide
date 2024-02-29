@@ -30,6 +30,8 @@ open class SegementSlideViewController: UIViewController {
     internal var lastChildBouncesTranslationY: CGFloat = 0
     internal var cachedChildViewControllerIndex: Set<Int> = Set()
     
+    /// 상단에 NavigationView의 높이를 더해서 SwitcherView가 멈출 곳을 계산한다.
+    public var headerNaviViewHeight: CGFloat = 0.0
     public var headerStickyHeight: CGFloat {
         let headerHeight = headerView.frame.height.rounded(.up)
         if edgesForExtendedLayout.contains(.top) {

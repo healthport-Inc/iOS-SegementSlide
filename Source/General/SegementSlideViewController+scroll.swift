@@ -15,13 +15,16 @@ extension SegementSlideViewController {
             scrollViewDidScroll(parentScrollView, isParent: true)
         }
         let parentContentOffsetY = parentScrollView.contentOffset.y
+        
+        /// SwitcherView가 멈출 곳을 기존의 높이에서 상단 네비뷰의 높이까지 계산해준다.
+        let stickyHeight = self.headerStickyHeight - self.headerNaviViewHeight
         switch innerBouncesType {
         case .parent:
             if !canParentViewScroll {
-                parentScrollView.contentOffset.y = headerStickyHeight
+                parentScrollView.contentOffset.y = stickyHeight
                 canChildViewScroll = true
-            } else if parentContentOffsetY >= headerStickyHeight {
-                parentScrollView.contentOffset.y = headerStickyHeight
+            } else if parentContentOffsetY >= stickyHeight {
+                parentScrollView.contentOffset.y = stickyHeight
                 canParentViewScroll = false
                 canChildViewScroll = true
             } else {
