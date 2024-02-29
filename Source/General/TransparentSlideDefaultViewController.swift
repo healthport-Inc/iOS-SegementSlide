@@ -17,18 +17,6 @@ open class TransparentSlideDefaultViewController: TransparentSlideViewController
         return defaultSwitcherView
     }
     
-    /// 선택된 버튼과 선택 되지 않은 버튼에 대한 Attributes 프로퍼티.
-    public var selectedConfig: [NSAttributedString.Key : Any]? {
-        didSet {
-            self.defaultSwitcherView.selectedConfig = self.selectedConfig
-        }
-    }
-    public var normalConfig: [NSAttributedString.Key : Any]? {
-        didSet {
-            self.defaultSwitcherView.normalConfig = self.normalConfig
-        }
-    }
-    
     open override func setupSwitcher() {
         super.setupSwitcher()
         defaultSwitcherView.config = switcherConfig
