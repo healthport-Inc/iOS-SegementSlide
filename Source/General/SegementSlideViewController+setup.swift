@@ -164,9 +164,14 @@ extension SegementSlideViewController {
             /// switcherView가 아래로 내려가고 contentView가 찌그러져 top과 bottom이 view의 bottom에 붙는 순간에
             /// SwitcherView도 view의 bottom 아래로는 내려가지 않게 됨.
             /// 그래서 해당 constraint의 priority를 700으로 줄여서 해결 함.
-            let bottomConstraint = contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            bottomConstraint.priority = UILayoutPriority(rawValue: 700)
-            contentView.bottomConstraint = bottomConstraint
+            if let constraint = safeAreaBottomConstraint {
+                constraint.priority = UILayoutPriority(rawValue: 500)
+                contentView.bottomConstraint = constraint
+            } else {
+                let bottomConstraint = contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                bottomConstraint.priority = UILayoutPriority(rawValue: 500)
+                contentView.bottomConstraint = bottomConstraint
+            }
         }
         
         headerView.layer.zPosition = -3

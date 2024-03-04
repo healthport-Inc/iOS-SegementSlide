@@ -19,6 +19,7 @@ open class SegementSlideViewController: UIViewController {
     public internal(set) var headerView: SegementSlideHeaderView!
     public internal(set) var contentView: SegementSlideContentView!
     public internal(set) var switcherView: SegementSlideSwitcherDelegate!
+    public var safeAreaBottomConstraint: NSLayoutConstraint?
     internal var innerHeaderView: UIView?
     
     internal var safeAreaTopConstraint: NSLayoutConstraint?
