@@ -25,18 +25,8 @@ extension SegementSlideViewController {
                 canChildViewScroll = true
             } else if parentContentOffsetY >= stickyHeight {
                 parentScrollView.contentOffset.y = stickyHeight
-                if let index = currentIndex, let scrollView = dequeueReusableViewController(at: index)?.scrollView {
-                    
-                    /// ScrollView의 frame 크기보다 contentSize의 크기가 커야 childScrollView의 스크롤이 가능하다.
-                    /// 즉, ScrollView의 frame보다 클 경우에만 childScrollView로 스크롤 권한을 넘겨 줄 수 있다.
-                    if scrollView.contentSize.height > scrollView.bounds.size.height {
-                        canParentViewScroll = false
-                        canChildViewScroll = true
-                    }
-                } else {
-                    canParentViewScroll = false
-                    canChildViewScroll = true
-                }
+                canParentViewScroll = false
+                canChildViewScroll = true
             } else {
                 resetOtherCachedChildViewControllerContentOffsetY()
             }
