@@ -110,7 +110,7 @@ extension SegementSlideDefaultViewController: SegementSlideDefaultSwitcherViewDe
         return showBadgeInSwitcher(at: index)
     }
     
-    public func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, didSelectTitleAt index: Int, animated: Bool) {
+    public func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, willSelectAtIndex index: Int, animated: Bool) {
         
         self.selectTitle(index, animated: animated)
     }

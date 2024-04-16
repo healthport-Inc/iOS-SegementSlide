@@ -294,6 +294,7 @@ extension SegementSlideDefaultSwitcherView {
     
     @objc
     private func didClickTitleButton(_ button: UIButton) {
+        delegate?.segementSwitcherView(self, willSelectAtIndex: button.tag, animated: true)
         selectItem(at: button.tag, animated: true)
     }
     
