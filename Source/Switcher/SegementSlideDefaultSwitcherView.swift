@@ -18,6 +18,11 @@ public protocol SegementSlideDefaultSwitcherViewDelegate: class {
     
     func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, didSelectAtIndex index: Int, animated: Bool)
     func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, showBadgeAtIndex index: Int) -> BadgeType
+    func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, willSelectAtIndex index: Int, animated: Bool)
+}
+
+extension SegementSlideDefaultSwitcherViewDelegate {
+    public func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, willSelectAtIndex index: Int, animated: Bool) { }
 }
 
 public class SegementSlideDefaultSwitcherView: UIView {
@@ -221,7 +226,6 @@ extension SegementSlideDefaultSwitcherView {
     }
     
     private func updateSelectedButton(at index: Int, animated: Bool) {
-        // FIXED
         guard scrollView.frame != .zero else {
             return
         }

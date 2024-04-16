@@ -30,9 +30,20 @@ open class SegementSlideViewController: UIViewController {
     internal var canChildViewScroll: Bool = false
     internal var lastChildBouncesTranslationY: CGFloat = 0
     internal var cachedChildViewControllerIndex: Set<Int> = Set()
+    /// SwitcherView를 통해 스크롤을 했는지 여부를 묻는 변수.
+    internal var isScrolledBySelectItem: Bool = false
     
     /// 상단에 NavigationView의 높이를 더해서 SwitcherView가 멈출 곳을 계산한다.
     public var headerNaviViewHeight: CGFloat = 0.0
+    /// 직접 스크롤하여 다음 페이지로 넘어가지 못하도록 방지한다.
+    public var isScrollEnabled: Bool {
+        get {
+            self.contentView.isScrollEnabled
+        }
+        set {
+            self.contentView.isScrollEnabled = newValue
+        }
+    }
     public var headerStickyHeight: CGFloat {
         let headerHeight = headerView.frame.height.rounded(.up)
         if edgesForExtendedLayout.contains(.top) {

@@ -77,8 +77,14 @@ extension SegementSlideViewController {
             if !canChildViewScroll {
                 childScrollView.contentOffset.y = 0
             } else if childContentOffsetY <= 0 {
-                canChildViewScroll = false
-                canParentViewScroll = true
+                /// 현재 ContentView의 스크롤이 불가능하고, SwitcherView의 Select를 통해 Scroll 되었다면
+                /// 현재 상태를 유지하도록 한다.
+                if self.contentView.isScrollEnabled == false, self.isScrolledBySelectItem {
+                    self.isScrolledBySelectItem = false
+                } else {
+                    canChildViewScroll = false
+                    canParentViewScroll = true
+                }
             }
         case .child:
             if !canChildViewScroll {

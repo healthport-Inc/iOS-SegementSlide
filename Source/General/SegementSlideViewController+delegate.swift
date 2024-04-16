@@ -65,10 +65,17 @@ extension SegementSlideViewController: SegementSlideContentDelegate {
                 scrollView.contentOffset.y = contentOffsetY
                 return
             }
-            guard index == self.currentIndex else {
-                return
+            
+            if self.isScrollEnabled {
+                guard index == self.currentIndex else {
+                    return
+                }
+                self.childScrollViewDidScroll(scrollView)
+            } else {
+                /// contentView의 좌우 스크롤이 불가능 할 때는
+                /// switcherView의 index 상관 없이 childScrollView가 scroll 가능하도록 한다.
+                self.childScrollViewDidScroll(scrollView)
             }
-            self.childScrollViewDidScroll(scrollView)
         })
         childKeyValueObservations[key] = keyValueObservation
     }

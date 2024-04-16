@@ -8,7 +8,12 @@
 import UIKit
 
 open class SegementSlideDefaultViewController: SegementSlideViewController {
-    
+    public var scrolledAtSwitch: Bool {
+        get {
+            let yOffset = self.headerStickyHeight - self.headerNaviViewHeight
+            return self.scrollView.contentOffset.y == yOffset
+        }
+    }
     private let defaultSwitcherView = SegementSlideDefaultSwitcherView()
     
     public override func segementSlideSwitcherView() -> SegementSlideSwitcherDelegate {
@@ -34,6 +39,11 @@ open class SegementSlideDefaultViewController: SegementSlideViewController {
         defaultSwitcherView.config = switcherConfig
     }
     
+    open func selectTitle(_ index: Int, animated: Bool) {
+        self.isScrolledBySelectItem = true
+        /// Switcher 버튼을 눌렀을 때 ContentView의 스크롤이 불가능한 상태이면 이 함수가 호출 된다.
+    }
+    
     open var switcherConfig: SegementSlideDefaultSwitcherConfig {
         return SegementSlideDefaultSwitcherConfig.shared
     }
@@ -54,7 +64,19 @@ open class SegementSlideDefaultViewController: SegementSlideViewController {
     public func reloadBadgeInSwitcher() {
         defaultSwitcherView.reloadBadges()
     }
-    
+    /// 스크롤뷰를 switcherView가 있는 곳 까지 scroll 하도록 한다.
+    public func scrollToSwitch(_ completionHandler: (() -> Void)? = nil) {
+        let keypath = "contentOffsetAnimationDuration"
+        guard let duration = self.scrollView.value(forKey: keypath) as? Double else { return }
+        
+        let yOffset = self.headerStickyHeight - self.headerNaviViewHeight
+        let origin = CGPoint(x: 0.0, y: yOffset)
+        self.scrollView.setContentOffset(origin, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: {
+            completionHandler?()
+        })
+    }
 }
 
 extension SegementSlideDefaultViewController: SegementSlideSwitcherDataSource {
@@ -76,6 +98,9 @@ extension SegementSlideDefaultViewController: SegementSlideDefaultSwitcherViewDe
     }
     
     public func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, didSelectAtIndex index: Int, animated: Bool) {
+        guard contentView.scrollView.isScrollEnabled else {
+            return
+        }
         if contentView.selectedIndex != index {
             contentView.selectItem(at: index, animated: animated)
         }
@@ -85,4 +110,8 @@ extension SegementSlideDefaultViewController: SegementSlideDefaultSwitcherViewDe
         return showBadgeInSwitcher(at: index)
     }
     
+    public func segementSwitcherView(_ segementSlideSwitcherView: SegementSlideDefaultSwitcherView, didSelectTitleAt index: Int, animated: Bool) {
+        
+        self.selectTitle(index, animated: animated)
+    }
 }
